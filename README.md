@@ -1,0 +1,2 @@
+# sticky
+server side clipboard

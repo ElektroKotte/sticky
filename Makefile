@@ -1,4 +1,4 @@
-.PHONY: all debug release serve
+.PHONY: all debug release serve certs docker
 
 MODE ?= release
 release_flags = --release
@@ -11,9 +11,15 @@ debug release:
 build:
 	cargo build $($(MODE)_flags)
 
+certs:
+	$(MAKE) -C certs
+
 target/debug/sticky: $(MODE)
 
 serve: target/debug/sticky
-	mkdir -p cgi-bin
-	cp target/debug/sticky cgi-bin
-	python -m CGIHTTPServer 7777
+
+docker: certs release
+	docker build -t sticky .
+
+run: docker
+	docker run -p 3000:3000 sticky

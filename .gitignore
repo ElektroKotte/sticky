@@ -1,1 +1,7 @@
 target
+cgi-bin
+*.crt
+*.csr
+*.key
+*.pem
+*.srl

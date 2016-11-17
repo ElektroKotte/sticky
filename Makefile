@@ -22,4 +22,4 @@ docker: certs release
 	docker build -t sticky .
 
 run: docker
-	docker run -p 3000:3000 sticky
+	docker run -p 7010:7010 sticky

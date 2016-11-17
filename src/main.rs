@@ -1,26 +1,24 @@
-use std::io::{self, BufReader, Error, ErrorKind};
+use std::io::{self, Error, ErrorKind};
 use std::io::prelude::*;
 use std::env;
 use std::fs::File;
 use std::process;
 
-const CLIPBOARD_MAX_SIZE: usize = 4096 * 10;
+const CLIPBOARD_MAX_SIZE: usize = 4096 * 100;
 const BUFFER_SIZE: usize = 4096;
 const CLIPBOARD_DEFAULT_FILE: &'static str = "/tmp/sticky-default";
 
 fn handle_get() -> io::Result<()> {
-    println!("Content-type: text/plain");
+    println!("Content-type: application/octet-stream");
     println!("");
 
-    let clipboard_file = try!(File::open(CLIPBOARD_DEFAULT_FILE));
-    let mut clipboard = BufReader::new(clipboard_file);
+    let mut buffer = [0u8; BUFFER_SIZE];
+    let mut clipboard_file = try!(File::open(CLIPBOARD_DEFAULT_FILE));
 
-    match clipboard.fill_buf() {
-        Ok(buffer) => {
-            try!(io::stdout().write(buffer));
-        },
-        Err(_) => ()
+    while try!(clipboard_file.read(&mut buffer[..])) > 0 {
+        try!(io::stdout().write(&buffer));
     }
+
     Ok(())
 }
 
